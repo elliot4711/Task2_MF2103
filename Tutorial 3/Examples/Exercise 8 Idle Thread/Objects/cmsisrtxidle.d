@@ -1,0 +1,1 @@
+./objects/cmsisrtxidle.o: CMSISrtxIdle
