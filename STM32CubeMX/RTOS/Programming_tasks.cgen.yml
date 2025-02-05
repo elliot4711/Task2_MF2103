@@ -1,0 +1,10 @@
+generator-import:
+  for-device: STM32L476RGTx
+  add-path:
+    - ./MX_Device
+  groups:
+    - group: CubeMX
+      files:
+        - file: ./STM32CubeMX/MDK-ARM/startup_stm32l476xx.s
+        - file: ./STM32CubeMX/Src/system_stm32l4xx.c
+    - group: STM32 HAL Driver

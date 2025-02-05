@@ -59,7 +59,20 @@ static void MX_TIM3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint32_t Main_GetTickMillisec(void) {return HAL_GetTick();}
+inline uint32_t Main_GetTickMillisec(void)
+{
+#ifdef __RTX 
+  #if defined (osCMSIS) && (osCMSIS < 0x20000U)
+    extern uint32_t os_time;
+    return os_time;
+  #else
+    extern uint32_t osKernelGetTickCount();
+    return osKernelGetTickCount();
+  #endif
+#else
+  return HAL_GetTick();
+#endif
+}
 /* USER CODE END 0 */
 
 /**

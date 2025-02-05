@@ -1,0 +1,13 @@
+build-gen-idx:
+  generated-by: uVision version 5.41.0.0
+  generators:
+    - board: ""
+      device: STM32L476RGTx
+      id: CubeMX
+      output: C:/Users/StudentMMK/Documents/Group27/STM32CubeMX/RTOS/
+      project-type: single-core
+      cbuild-gens:
+        - cbuild-gen: C:/Users/StudentMMK/Documents/Group27/Programming_tasks.RTOS.cbuild-gen.yml
+          configuration: .RTOS
+          name: C:/Users/StudentMMK/Documents/Group27/STM32CubeMX/RTOS/Programming_tasks.cgen.yml
+          project: Programming_tasks
