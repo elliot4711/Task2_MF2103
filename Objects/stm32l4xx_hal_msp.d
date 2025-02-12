@@ -1,5 +1,5 @@
 ./objects/stm32l4xx_hal_msp.o: \
-  C:\Users\StudentMMK\Documents\Group27\RTE\Device\STM32L476RGTx\STCubeGenerated\Src\stm32l4xx_hal_msp.c \
+  C:\Users\StudentMMK\Documents\Task2_MF2103\RTE\Device\STM32L476RGTx\STCubeGenerated\Src\stm32l4xx_hal_msp.c \
   RTE\_RTOS\Pre_Include_Global.h \
   RTE\Device\STM32L476RGTx\STCubeGenerated\Inc\main.h \
   C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\STM32L4xx_HAL_Driver\Inc\stm32l4xx_hal.h \

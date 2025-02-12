@@ -22,13 +22,20 @@ static const osThreadAttr_t ThreadAttr_ctrl = {
   .priority	= osPriorityNormal, //This decleration requires C99 to be selected in the project compiler options
 };
 
+static const osThreadAttr_t ThreadAttr_main = {
+	.name = "main",		
+  .priority	= osPriorityNormal, //This decleration requires C99 to be selected in the project compiler options
+};
+
 /* Functions -----------------------------------------------------------------*/
 
 
 // Define threads
-osThreadId_t T_ID1, T_ID2;
+osThreadId_t T_ID1, T_ID2, T_ID3;
 
 void static app_main();
+void static app_ref();
+void static app_ctrl();
 
 
 /* Run setup needed for all periodic tasks */
@@ -45,7 +52,11 @@ void Application_Setup()
 
   // Initialize controller
   Controller_Reset();
-	app_main();
+	osKernelInitialize();
+	T_ID1 = osThreadNew(app_ref, NULL, &ThreadAttr_ref);
+	T_ID2 = osThreadNew(app_ctrl, NULL, &ThreadAttr_ctrl);
+	T_ID3 = osThreadNew(app_main, NULL, &ThreadAttr_main);
+	osKernelStart();
 }
 
 void app_ctrl () {
@@ -81,10 +92,6 @@ void app_ref(){
 }
 
 void static app_main() {
-	osKernelInitialize();
-	T_ID1 = osThreadNew(app_ref, NULL, &ThreadAttr_ref);
-	T_ID2 = osThreadNew(app_ctrl, NULL, &ThreadAttr_ctrl);
-	osKernelStart();
   for (;;)
   {
     Application_Loop();
