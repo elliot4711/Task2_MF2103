@@ -7,10 +7,12 @@
 
 #define SAMPLE_TIME 10
 #define REF_FLIP_TIME 4000
+#define MAIN_TIME 1
 
 /* Global variables ----------------------------------------------------------*/
 int32_t reference, velocity, control;
 uint32_t millisec;
+uint32_t timer_check;
 
 static const osThreadAttr_t ThreadAttr_ref = {
 	.name = "ref",		
@@ -36,6 +38,7 @@ osThreadId_t T_ID1, T_ID2, T_ID3;
 void static app_main();
 void static app_ref();
 void static app_ctrl();
+void callback_signal_flags(void *argument);
 
 
 /* Run setup needed for all periodic tasks */
@@ -52,16 +55,32 @@ void Application_Setup()
 
   // Initialize controller
   Controller_Reset();
-	osKernelInitialize();
-	T_ID1 = osThreadNew(app_ref, NULL, &ThreadAttr_ref);
-	T_ID2 = osThreadNew(app_ctrl, NULL, &ThreadAttr_ctrl);
-	T_ID3 = osThreadNew(app_main, NULL, &ThreadAttr_main);
-	osKernelStart();
+	app_main();
 }
+
+void callback_signal_flags(void *argument){
+	switch( (uint32_t) argument)
+	{
+		case 0:
+			osThreadFlagsSet(T_ID1, 0x03);
+		break;
+		
+		case 1:
+			osThreadFlagsSet(T_ID2, 0x05);
+		break;
+				
+		//case 2:
+			//osThreadFlagsSet(T_ID3, 0x07);
+		//break;
+			
+	}
+}
+
 
 void app_ctrl () {
 		for(;;) {
 		
+			osThreadFlagsWait(0x03, osFlagsWaitAll, osWaitForever);
 			
 			// Get time
 			millisec = Main_GetTickMillisec();
@@ -76,7 +95,7 @@ void app_ctrl () {
 			Peripheral_PWM_ActuateMotor(control);
 		
 		
-			osDelay(SAMPLE_TIME);
+			//osDelay(SAMPLE_TIME);
 	}
 
 }
@@ -84,17 +103,37 @@ void app_ctrl () {
 void app_ref(){
 	for(;;) {
 		
+		osThreadFlagsWait(0x05, osFlagsWaitAll, osWaitForever);
+		
 		reference = - reference;
 		
 		
-		osDelay(REF_FLIP_TIME);
+		//osDelay(REF_FLIP_TIME);
 	}
 }
 
 void static app_main() {
+	osKernelInitialize();
+	T_ID1 = osThreadNew(app_ref, NULL, &ThreadAttr_ref);
+	T_ID2 = osThreadNew(app_ctrl, NULL, &ThreadAttr_ctrl);
+	//T_ID3 = osThreadNew(app_main, NULL, &ThreadAttr_main);
+	
+	osTimerId_t timer_ctrl;
+	timer_ctrl = osTimerNew(callback_signal_flags, osTimerPeriodic, (void *)0, NULL);
+	osTimerId_t timer_ref;
+	timer_ref = osTimerNew(callback_signal_flags, osTimerPeriodic, (void *)1, NULL);
+	//osTimerId_t timer_main;
+	//timer_main = osTimerNew(callback_signal_flags, osTimerPeriodic, (void *)2, NULL);
+	
+	osTimerStart(timer_ctrl, SAMPLE_TIME);
+	osTimerStart(timer_ref, REF_FLIP_TIME);
+	//osTimerStart(timer_main, MAIN_TIME);
+	
+	osKernelStart();
   for (;;)
   {
-    Application_Loop();
+		//osThreadFlagsWait(0x07, osFlagsWaitAll, osWaitForever);
+		Application_Loop();
   }
 
 }
