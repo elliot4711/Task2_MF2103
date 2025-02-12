@@ -7,7 +7,6 @@
 
 #define SAMPLE_TIME 10
 #define REF_FLIP_TIME 4000
-#define MAIN_TIME 1
 
 /* Global variables ----------------------------------------------------------*/
 int32_t reference, velocity, control;
@@ -26,7 +25,7 @@ static const osThreadAttr_t ThreadAttr_ctrl = {
 
 static const osThreadAttr_t ThreadAttr_main = {
 	.name = "main",		
-  .priority	= osPriorityNormal, //This decleration requires C99 to be selected in the project compiler options
+  .priority	= osPriorityBelowNormal, //This decleration requires C99 to be selected in the project compiler options
 };
 
 /* Functions -----------------------------------------------------------------*/
@@ -34,6 +33,11 @@ static const osThreadAttr_t ThreadAttr_main = {
 
 // Define threads
 osThreadId_t T_ID1, T_ID2, T_ID3;
+
+
+// Define timers globally
+osTimerId_t timer_ctrl, timer_ref;
+
 
 void static app_main();
 void static app_ref();
@@ -55,25 +59,44 @@ void Application_Setup()
 
   // Initialize controller
   Controller_Reset();
-	app_main();
+	osKernelInitialize();
+	T_ID1 = osThreadNew(app_ref, NULL, &ThreadAttr_ref);
+	T_ID2 = osThreadNew(app_ctrl, NULL, &ThreadAttr_ctrl);
+	T_ID3 = osThreadNew(app_main, NULL, &ThreadAttr_main);
+	
+	osKernelStart();
 }
 
 void callback_signal_flags(void *argument){
-	switch( (uint32_t) argument)
-	{
-		case 0:
-			osThreadFlagsSet(T_ID1, 0x03);
-		break;
+	int32_t val = (int)(uintptr_t)argument;
+	timer_check = val;
+	if (val == 1){
+		osThreadFlagsSet(T_ID1, 0x05);
 		
-		case 1:
-			osThreadFlagsSet(T_ID2, 0x05);
-		break;
+	}
+	else if (val == 0){
+		osThreadFlagsSet(T_ID2, 0x03);
+		
+	}
+
+	
+	
+	
+	//switch(val)
+	//{
+		//case 0:
+			//osThreadFlagsSet(T_ID1, 0x03);
+		//break;
+		
+		//case 1:
+			//osThreadFlagsSet(T_ID2, 0x05);
+		//break;
 				
 		//case 2:
 			//osThreadFlagsSet(T_ID3, 0x07);
 		//break;
 			
-	}
+	//}
 }
 
 
@@ -113,15 +136,10 @@ void app_ref(){
 }
 
 void static app_main() {
-	osKernelInitialize();
-	T_ID1 = osThreadNew(app_ref, NULL, &ThreadAttr_ref);
-	T_ID2 = osThreadNew(app_ctrl, NULL, &ThreadAttr_ctrl);
-	//T_ID3 = osThreadNew(app_main, NULL, &ThreadAttr_main);
+	timer_ctrl = osTimerNew(callback_signal_flags, osTimerPeriodic, (void *)(uintptr_t)0, NULL);
 	
-	osTimerId_t timer_ctrl;
-	timer_ctrl = osTimerNew(callback_signal_flags, osTimerPeriodic, (void *)0, NULL);
-	osTimerId_t timer_ref;
-	timer_ref = osTimerNew(callback_signal_flags, osTimerPeriodic, (void *)1, NULL);
+	timer_ref = osTimerNew(callback_signal_flags, osTimerPeriodic, (void *)(uintptr_t)1, NULL);
+	
 	//osTimerId_t timer_main;
 	//timer_main = osTimerNew(callback_signal_flags, osTimerPeriodic, (void *)2, NULL);
 	
@@ -129,7 +147,6 @@ void static app_main() {
 	osTimerStart(timer_ref, REF_FLIP_TIME);
 	//osTimerStart(timer_main, MAIN_TIME);
 	
-	osKernelStart();
   for (;;)
   {
 		//osThreadFlagsWait(0x07, osFlagsWaitAll, osWaitForever);
