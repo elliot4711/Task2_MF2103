@@ -22,16 +22,22 @@ uint32_t millisec;
 uint8_t retval_server;
 uint8_t sock_status_server;
 
+struct msg {
+  uint32_t time;
+  int32_t vel;
+};
+
+
 
 // Thread definitions
 static const osThreadAttr_t ThreadAttr_ref = {
 	.name = "ref",		
-  .priority	= osPriorityAboveNormal,
+  .priority	= osPriorityNormal,
 };
 
 static const osThreadAttr_t ThreadAttr_sendrecieve = {
 	.name = "sendrecieve",		
-  .priority	= osPriorityNormal,
+  .priority	= osPriorityAboveNormal,
 };
 
 static const osThreadAttr_t ThreadAttr_main = {
@@ -93,13 +99,17 @@ void callback_signal_flags(void *argument){
 
 void app_sendrecieve () {
 		for(;;) {
-		
+			
+			struct msg data;
+			
 			osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until all flags (01) are set
 			
-			if ((retval_server = recv(APP_SOCK, (uint8_t*)&velocity, sizeof(velocity))) == sizeof(velocity))
+			if ((retval_server = recv(APP_SOCK, (uint8_t*)&data, sizeof(data))) == sizeof(data))
 			{
-			printf("Received: %d\n\r", velocity);
-			millisec = Main_GetTickMillisec();
+				printf("Received: time=%u, vel=%d\n", data.time, data.vel);
+				millisec = data.time;
+				velocity = data.vel;
+			//millisec = Main_GetTickMillisec();
 			
 			control = Controller_PIController(&reference, &velocity, &millisec);
 			

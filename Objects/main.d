@@ -1,5 +1,5 @@
 ./objects/main.o: RTE\Device\STM32L476RGTx\STCubeGenerated\Src\main.c \
-  RTE\_Client\Pre_Include_Global.h \
+  RTE\_Server\Pre_Include_Global.h \
   RTE\Device\STM32L476RGTx\STCubeGenerated\Inc\main.h \
   C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\STM32L4xx_HAL_Driver\Inc\stm32l4xx_hal.h \
   RTE\Device\STM32L476RGTx\STCubeGenerated\Inc\stm32l4xx_hal_conf.h \

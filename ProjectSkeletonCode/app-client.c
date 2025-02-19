@@ -32,12 +32,12 @@ struct msg {
 // Thread definitions
 static const osThreadAttr_t ThreadAttr_sendrecieve = {
 	.name = "sendrecieve",		
-  .priority	= osPriorityNormal,
+  .priority	= osPriorityAboveNormal,
 };
 
 static const osThreadAttr_t ThreadAttr_ctrl = {
 	.name = "ctrl",		
-  .priority	= osPriorityAboveNormal,
+  .priority	= osPriorityNormal,
 };
 
 static const osThreadAttr_t ThreadAttr_main = {
@@ -132,12 +132,18 @@ void app_ctrl () {
 void app_sendrecieve(){
 	for(;;) {
 		
+		struct msg data;
+		
 		osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until all flags (01) are set
 		flag = 0;
 		
-		if((retval_client = send(APP_SOCK, (uint8_t*)&velocity, sizeof(velocity))) == sizeof(velocity))
+		data.vel = velocity;
+		data.time = Main_GetTickMillisec();
+		
+		if((retval_client = send(APP_SOCK, (uint8_t*)&data, sizeof(data))) == sizeof(data))
 		{
-			printf("Sending velocity: %d \n\r", velocity);
+			printf("Sending velocity: %d \n\r", data.vel);
+			printf("Sending time: %d \n\r", data.time);
 			
 			if((retval_client = recv(APP_SOCK, (uint8_t*)&control, sizeof(control))) == sizeof(control))
 			{
