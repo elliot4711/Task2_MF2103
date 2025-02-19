@@ -16,17 +16,17 @@ uint32_t millisec;
 // Thread definitions
 static const osThreadAttr_t ThreadAttr_ref = {
 	.name = "ref",		
-  .priority	= osPriorityAboveNormal, //This decleration requires C99 to be selected in the project compiler options
+  .priority	= osPriorityAboveNormal,
 };
 
 static const osThreadAttr_t ThreadAttr_ctrl = {
 	.name = "ctrl",		
-  .priority	= osPriorityNormal, //This decleration requires C99 to be selected in the project compiler options
+  .priority	= osPriorityNormal,
 };
 
 static const osThreadAttr_t ThreadAttr_main = {
 	.name = "main",		
-  .priority	= osPriorityBelowNormal, //This decleration requires C99 to be selected in the project compiler options
+  .priority	= osPriorityBelowNormal,
 };
 
 
@@ -37,14 +37,12 @@ osThreadId_t T_ID1, T_ID2, T_ID3;
 // Define timer IDs
 osTimerId_t timer_ctrl, timer_ref;
 
-// Prototypes of functions
+// Predefine functions
 void static app_main();
 void static app_ref();
 void static app_ctrl();
 void callback_signal_flags(void *argument);
 
-
-/* Run setup needed for all periodic tasks */
 void Application_Setup()
 {
   // Reset global variables
@@ -117,7 +115,7 @@ void app_ref(){
 		
 		osThreadFlagsWait(0x05, osFlagsWaitAll, osWaitForever); // Wait until all flags (101) are set
 		
-		reference = - reference;
+		reference = -reference;
 		
 		
 		//osDelay(REF_FLIP_TIME);
@@ -130,7 +128,7 @@ void static app_main() {
 	
 	timer_ref = osTimerNew(callback_signal_flags, osTimerPeriodic, (void *)(uintptr_t)1, NULL);
 	
-	// Start timers, set period time
+	// Start timers with set period time
 	osTimerStart(timer_ctrl, SAMPLE_TIME);
 	osTimerStart(timer_ref, REF_FLIP_TIME);
 	
@@ -141,7 +139,6 @@ void static app_main() {
 
 }
 
-/* Define what to do in the infinite loop */
 void Application_Loop()
 {
  // Do nothing

@@ -1,6 +1,6 @@
 ./objects/stm32l4xx_hal_pwr_1.o: \
   C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\STM32L4xx_HAL_Driver\Src\stm32l4xx_hal_pwr.c \
-  RTE\_RTOS\Pre_Include_Global.h \
+  RTE\_Client\Pre_Include_Global.h \
   C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\STM32L4xx_HAL_Driver\Inc\stm32l4xx_hal.h \
   RTE\Device\STM32L476RGTx\STCubeGenerated\Inc\stm32l4xx_hal_conf.h \
   C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\STM32L4xx_HAL_Driver\Inc\stm32l4xx_hal_rcc.h \
@@ -21,5 +21,7 @@
   C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\STM32L4xx_HAL_Driver\Inc\stm32l4xx_hal_flash_ramfunc.h \
   C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\STM32L4xx_HAL_Driver\Inc\stm32l4xx_hal_pwr.h \
   C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\STM32L4xx_HAL_Driver\Inc\stm32l4xx_hal_pwr_ex.h \
+  C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\STM32L4xx_HAL_Driver\Inc\stm32l4xx_hal_spi.h \
+  C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\STM32L4xx_HAL_Driver\Inc\stm32l4xx_hal_spi_ex.h \
   C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\STM32L4xx_HAL_Driver\Inc\stm32l4xx_hal_tim.h \
   C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\STM32L4xx_HAL_Driver\Inc\stm32l4xx_hal_tim_ex.h
