@@ -10,16 +10,13 @@
 
 #define APP_SOCK 0
 #define SERVER_PORT 2103
-#define CLIENT_PORT 2104
 #define SAMPLE_TIME 10
-#define REF_FLIP_TIME 4000
 
 // Global variables ----------------------------------------------------------*/
-int32_t reference, velocity, control;
-uint32_t millisec;
-int8_t retval_client;
-uint8_t sock_status_client;
-uint8_t flag;
+int32_t control;
+int8_t socket_return;
+uint8_t socket_status;
+uint8_t com_success; // Success flag
 uint8_t server_addr[4] = {192, 168, 0, 10};
 
 
@@ -28,10 +25,12 @@ struct msg {
   int32_t vel;
 };
 
+struct msg data;
+
 
 // Thread definitions
-static const osThreadAttr_t ThreadAttr_sendrecieve = {
-	.name = "sendrecieve",		
+static const osThreadAttr_t ThreadAttr_com = {
+	.name = "com",		
   .priority	= osPriorityAboveNormal,
 };
 
@@ -55,29 +54,29 @@ osTimerId_t timer_ctrl, timer_ref;
 
 // Predefine functions
 void static app_main();
-void static app_sendrecieve();
+void static app_com();
 void static app_ctrl();
 void callback_signal_flags(void *argument);
 
 void Application_Setup()
 {
-  // Reset global variables
-  reference = 2000;
-  velocity = 0;
-  control = 0;
-  millisec = 0;
+	// Reset global variables
+	reference = 2000;
+	data.vel = 0;
+	control = 0;
+	data.time = 0;
 
-  // Initialise hardware
-  Peripheral_GPIO_EnableMotor();
+	// Initialise hardware
+	Peripheral_GPIO_EnableMotor();
 
-  // Initialize controller
-  Controller_Reset();
+	// Initialize controller
+	Controller_Reset();
 	
 	// Initialize kernel
 	osKernelInitialize();
 	
 	// Create new threads
-	T_ID1 = osThreadNew(app_sendrecieve, NULL, &ThreadAttr_sendrecieve);
+	T_ID1 = osThreadNew(app_com, NULL, &ThreadAttr_com);
 	T_ID2 = osThreadNew(app_ctrl, NULL, &ThreadAttr_ctrl);
 	T_ID3 = osThreadNew(app_main, NULL, &ThreadAttr_main);
 	
@@ -85,17 +84,9 @@ void Application_Setup()
 	osKernelStart();
 }
 
-void callback_signal_flags(void *argument){
-	// Callback function that sets thread flags based on input
-	int32_t val = (int)(uintptr_t)argument;
-	
-	if (val == 0){
-		osThreadFlagsSet(T_ID2, 0x01); // Set flag 011 to thread T_ID2
-		
-	}
-	else {
-		//Why are you here?
-	}
+void callback_signal_flags(){
+	// Callback function that sets thread flag
+	osThreadFlagsSet(T_ID2, 0x01); // Set flag 011 to thread T_ID2
 }
 
 
@@ -105,20 +96,22 @@ void app_ctrl () {
 			osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until all flags (01) are set
 			
 			// Get time
-			millisec = Main_GetTickMillisec();
+			data.time = Main_GetTickMillisec();
 
 			// Calculate motor velocity
-			velocity = Peripheral_Encoder_CalculateVelocity(millisec);
+			data.vel = Peripheral_Encoder_CalculateVelocity(data.time);
 			
-			osThreadFlagsSet(T_ID1, 0x01);
-			osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until all flags (01) are set
+			osThreadFlagsSet(T_ID1, 0x01); // Give go-ahead to com thread to start communicating
+			osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait to recieve control signal
 
 			
-			if (flag == 1){
+			if (com_success == 1){
+				// If flag indicates success in recieving control signal, then we actuate motor
 				Peripheral_PWM_ActuateMotor(control);
 			}
-			else if (flag == 0)
+			else if (com_success == 0)
 			{
+				// If there is an error in recieving control signal, stop motor
 				TIM3->CCR1 = 0;
 				TIM3->CCR2 = 0;
 				control = 0;
@@ -129,35 +122,31 @@ void app_ctrl () {
 
 }
 
-void app_sendrecieve(){
+void app_com(){
 	for(;;) {
 		
-		struct msg data;
+		osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until velocity has been read and ctrl thread gives go-ahead
+		com_success= 0; // Reset flag
 		
-		osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until all flags (01) are set
-		flag = 0;
-		
-		data.vel = velocity;
-		data.time = Main_GetTickMillisec();
-		
-		if((retval_client = send(APP_SOCK, (uint8_t*)&data, sizeof(data))) == sizeof(data))
+		if((socket_return = send(APP_SOCK, (uint8_t*)&data, sizeof(data))) == sizeof(data)) //
 		{
-			printf("Sending velocity: %d \n\r", data.vel);
+			
+			printf("Sending vel: %d \n\r", data.vel); // %d is for int, \n\r is newline and carriage return
 			printf("Sending time: %d \n\r", data.time);
 			
-			if((retval_client = recv(APP_SOCK, (uint8_t*)&control, sizeof(control))) == sizeof(control))
+			if((socket_return = recv(APP_SOCK, (uint8_t*)&control, sizeof(control))) == sizeof(control))
 			{
-				printf("Receive control: %d\n\r", control);
-				flag = 1;
+				printf("Control signal recieve success: %d\n\r", control);
+				com_success= 1;
 			}
 			else
 			{
-				printf("Failed to receive control!!! \n\r");
+				printf("Control signal recieve failure \n\r");
 			}
 		}
 		else
 		{
-			printf("Failed to send velocity!!! \n\r");
+			printf("Velocity send failure \n\r");
 		}
 	osThreadFlagsSet(T_ID2, 0x01);
 	}
@@ -165,7 +154,7 @@ void app_sendrecieve(){
 
 void static app_main() {
 	// Define timer with callback function, set to periodic, define argument to callback
-	timer_ctrl = osTimerNew(callback_signal_flags, osTimerPeriodic, (void *)(uintptr_t)0, NULL);
+	timer_ctrl = osTimerNew(callback_signal_flags, osTimerPeriodic, NULL, NULL);
 
 	
 	// Start timers with set period time
@@ -180,27 +169,27 @@ void static app_main() {
 
 void Application_Loop()
 {
-	//printf("Opening socket");
-	if((retval_client = socket(APP_SOCK, SOCK_STREAM, SERVER_PORT, SF_TCP_NODELAY)) == APP_SOCK)
+	printf("Opening socket");
+	if((socket_return = socket(APP_SOCK, SOCK_STREAM, SERVER_PORT, SF_TCP_NODELAY)) == APP_SOCK)
 	{
-		printf("Success!\n\r");
+		printf("Successfully opened socket \n\r");
 		
 		// Try to connect to server
-		printf("Connecting to server... ");
-		if((retval_client = connect(APP_SOCK, server_addr, SERVER_PORT)) == SOCK_OK)
+		printf("Connecting");
+		if((socket_return = connect(APP_SOCK, server_addr, SERVER_PORT)) == SOCK_OK)
 		{
-			printf("Socket Connected!\n\r");
-			retval_client = getsockopt(APP_SOCK, SO_STATUS, &sock_status_client);
-			while(sock_status_client == SOCK_ESTABLISHED)
+			printf("Socket has been connected\n\r");
+			socket_return = getsockopt(APP_SOCK, SO_STATUS, &socket_status);
+			while(socket_status == SOCK_ESTABLISHED)
 			{
 					osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever);
-					retval_client = getsockopt(APP_SOCK, SO_STATUS, &sock_status_client);
+					socket_return = getsockopt(APP_SOCK, SO_STATUS, &socket_status);
 			}
-			printf("Disconnected! \n\r");
+			printf("Socket disconnected \n\r");
 		}
 		else
 		{
-			printf("Failed to open the socket \n\r");
+			printf("Failure opening socket \n\r");
 		}
 		osDelay(100);
 		
