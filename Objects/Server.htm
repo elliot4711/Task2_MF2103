@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\Server.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Server.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6220000: Last Updated: Wed Feb 19 15:25:31 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6220000: Last Updated: Fri Feb 21 12:59:41 2025
 <BR><P>
 <H3>Maximum Stack Usage =        200 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -131,9 +131,9 @@ Function Pointers
  <LI><a href="#[5]">UsageFault_Handler</a> from stm32l4xx_it.o(.text.UsageFault_Handler) referenced from startup_stm32l476xx.o(RESET)
  <LI><a href="#[a]">WWDG_IRQHandler</a> from startup_stm32l476xx.o(.text) referenced from startup_stm32l476xx.o(RESET)
  <LI><a href="#[5d]">__main</a> from entry.o(.ARM.Collect$$$$00000000) referenced from startup_stm32l476xx.o(.text)
+ <LI><a href="#[5f]">app_com</a> from app-server.o(.text.app_com) referenced 2 times from app-server.o(.text.Application_Setup)
  <LI><a href="#[60]">app_main</a> from app-server.o(.text.app_main) referenced 2 times from app-server.o(.text.Application_Setup)
  <LI><a href="#[5e]">app_ref</a> from app-server.o(.text.app_ref) referenced 2 times from app-server.o(.text.Application_Setup)
- <LI><a href="#[5f]">app_sendrecieve</a> from app-server.o(.text.app_sendrecieve) referenced 2 times from app-server.o(.text.Application_Setup)
  <LI><a href="#[61]">callback_signal_flags</a> from app-server.o(.text.callback_signal_flags) referenced 2 times from app-server.o(.text.app_main)
  <LI><a href="#[7b]">fputc</a> from retarget_io.o(.text.fputc) referenced from printf1.o(i.__0printf$1)
  <LI><a href="#[5b]">main</a> from main.o(.text.main) referenced from entry9a.o(.ARM.Collect$$$$0000000B)
@@ -529,7 +529,7 @@ Global Symbols
 
 <P><STRONG><a name="[146]"></a>__scatterload_rt2</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, init.o(.text), UNUSED)
 
-<P><STRONG><a name="[8c]"></a>Application_Loop</STRONG> (Thumb, 196 bytes, Stack size 24 bytes, app-server.o(.text.Application_Loop))
+<P><STRONG><a name="[8c]"></a>Application_Loop</STRONG> (Thumb, 200 bytes, Stack size 24 bytes, app-server.o(.text.Application_Loop))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = Application_Loop &rArr; osThreadFlagsWait &rArr; EvrRtxThreadFlagsWait &rArr; EventRecord4
 </UL>
 <BR>[Calls]<UL><LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;close
@@ -546,7 +546,7 @@ Global Symbols
 <LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_main
 </UL>
 
-<P><STRONG><a name="[96]"></a>Application_Setup</STRONG> (Thumb, 164 bytes, Stack size 8 bytes, app-server.o(.text.Application_Setup))
+<P><STRONG><a name="[96]"></a>Application_Setup</STRONG> (Thumb, 156 bytes, Stack size 8 bytes, app-server.o(.text.Application_Setup))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = Application_Setup &rArr; osKernelInitialize &rArr; osRtxKernelBeforeInit &rArr; EventRecorderInitialize &rArr; EventRecorderStart
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelStart
@@ -565,16 +565,16 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32l476xx.o(RESET)
 </UL>
-<P><STRONG><a name="[fe]"></a>Controller_PIController</STRONG> (Thumb, 196 bytes, Stack size 16 bytes, controller.o(.text.Controller_PIController))
+<P><STRONG><a name="[fc]"></a>Controller_PIController</STRONG> (Thumb, 196 bytes, Stack size 16 bytes, controller.o(.text.Controller_PIController))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = Controller_PIController
 </UL>
-<BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_sendrecieve
+<BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_com
 </UL>
 
 <P><STRONG><a name="[94]"></a>Controller_Reset</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, controller.o(.text.Controller_Reset))
 <BR><BR>[Called By]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Application_Loop
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Application_Setup
-<LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_sendrecieve
+<LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_com
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_ref
 </UL>
 
@@ -1179,8 +1179,8 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EventRecord2
 </UL>
-<BR>[Called By]<UL><LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osTimerStart
-<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osTimerNew
+<BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osTimerStart
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osTimerNew
 <LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcRtxTimerStart
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcRtxTimerNew
 </UL>
@@ -1190,7 +1190,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EventRecord4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osTimerNew
+<BR>[Called By]<UL><LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osTimerNew
 </UL>
 
 <P><STRONG><a name="[e0]"></a>EvrRtxTimerStart</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, rtx_evr.o(.text.EvrRtxTimerStart))
@@ -1198,7 +1198,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EventRecord2
 </UL>
-<BR>[Called By]<UL><LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osTimerStart
+<BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osTimerStart
 </UL>
 
 <P><STRONG><a name="[e1]"></a>EvrRtxTimerStarted</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, rtx_evr.o(.text.EvrRtxTimerStarted))
@@ -1247,8 +1247,8 @@ Global Symbols
 <P><STRONG><a name="[e4]"></a>HAL_InitTick</STRONG> (Thumb, 90 bytes, Stack size 8 bytes, stm32l4xx_hal_1.o(.text.HAL_InitTick))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = HAL_InitTick &rArr; HAL_NVIC_SetPriority
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SYSTICK_Config
-<LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_SetPriority
+<BR>[Calls]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_SetPriority
+<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SYSTICK_Config
 </UL>
 <BR>[Called By]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_ClockConfig
 <LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_OscConfig
@@ -1488,8 +1488,8 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = WIZCHIP_READ
 </UL>
 <BR>[Called By]<UL><LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wizchip_sw_reset
-<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send
-<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
+<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;close
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getsockopt
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;listen
@@ -1510,8 +1510,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[137]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wizchip_sw_reset
 <LI><a href="#[10d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wizchip_settimeout
 <LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wizchip_init
-<LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send
-<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
+<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;close
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;listen
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;socket
@@ -1524,7 +1524,7 @@ Global Symbols
 <LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wizchip_setnetinfo
 </UL>
 
-<P><STRONG><a name="[61]"></a>callback_signal_flags</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, app-server.o(.text.callback_signal_flags))
+<P><STRONG><a name="[61]"></a>callback_signal_flags</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, app-server.o(.text.callback_signal_flags))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = callback_signal_flags &rArr; osThreadFlagsSet &rArr; osRtxPostProcess &rArr; osRtxKernelErrorNotify &rArr; EvrRtxKernelErrorNotify &rArr; EventRecord2
 </UL>
 <BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadFlagsSet
@@ -1537,8 +1537,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[101]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WIZCHIP_READ
 <LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WIZCHIP_WRITE
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send
-<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
+<BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;listen
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;socket
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Application_Loop
@@ -1550,15 +1550,15 @@ Global Symbols
 <P><STRONG><a name="[104]"></a>getSn_RX_RSR</STRONG> (Thumb, 458 bytes, Stack size 56 bytes, w5500.o(.text.getSn_RX_RSR))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = getSn_RX_RSR
 </UL>
-<BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
+<BR>[Called By]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getsockopt
 </UL>
 
 <P><STRONG><a name="[102]"></a>getSn_TX_FSR</STRONG> (Thumb, 458 bytes, Stack size 56 bytes, w5500.o(.text.getSn_TX_FSR))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = getSn_TX_FSR
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send
-<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
+<BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getsockopt
 </UL>
 
@@ -1971,7 +1971,7 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Application_Loop
 <LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;callback_signal_flags
-<LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_sendrecieve
+<LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_com
 </UL>
 
 <P><STRONG><a name="[93]"></a>osThreadFlagsWait</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, rtx_thread.o(.text.osThreadFlagsWait))
@@ -1981,7 +1981,7 @@ Global Symbols
 <LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EvrRtxThreadFlagsError
 </UL>
 <BR>[Called By]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Application_Loop
-<LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_sendrecieve
+<LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_com
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_ref
 </UL>
 
@@ -1994,7 +1994,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Application_Setup
 </UL>
 
-<P><STRONG><a name="[fb]"></a>osTimerNew</STRONG> (Thumb, 74 bytes, Stack size 24 bytes, rtx_timer.o(.text.osTimerNew))
+<P><STRONG><a name="[fe]"></a>osTimerNew</STRONG> (Thumb, 74 bytes, Stack size 24 bytes, rtx_timer.o(.text.osTimerNew))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = osTimerNew &rArr; EvrRtxTimerNew &rArr; EventRecord4
 </UL>
 <BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EvrRtxTimerNew
@@ -2003,7 +2003,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_main
 </UL>
 
-<P><STRONG><a name="[fc]"></a>osTimerStart</STRONG> (Thumb, 60 bytes, Stack size 16 bytes, rtx_timer.o(.text.osTimerStart))
+<P><STRONG><a name="[ff]"></a>osTimerStart</STRONG> (Thumb, 60 bytes, Stack size 16 bytes, rtx_timer.o(.text.osTimerStart))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = osTimerStart &rArr; EvrRtxTimerStart &rArr; EventRecord2
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EvrRtxTimerStart
@@ -2012,7 +2012,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_main
 </UL>
 
-<P><STRONG><a name="[fd]"></a>recv</STRONG> (Thumb, 230 bytes, Stack size 48 bytes, socket.o(.text.recv))
+<P><STRONG><a name="[fb]"></a>recv</STRONG> (Thumb, 230 bytes, Stack size 48 bytes, socket.o(.text.recv))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = recv &rArr; getSn_RX_RSR
 </UL>
 <BR>[Calls]<UL><LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wiz_recv_data
@@ -2022,7 +2022,7 @@ Global Symbols
 <LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WIZCHIP_WRITE
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;close
 </UL>
-<BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_sendrecieve
+<BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_com
 </UL>
 
 <P><STRONG><a name="[109]"></a>reg_wizchip_cs_cbfunc</STRONG> (Thumb, 56 bytes, Stack size 0 bytes, wizchip_conf.o(.text.reg_wizchip_cs_cbfunc))
@@ -2033,7 +2033,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[ff]"></a>send</STRONG> (Thumb, 290 bytes, Stack size 40 bytes, socket.o(.text.send))
+<P><STRONG><a name="[fd]"></a>send</STRONG> (Thumb, 290 bytes, Stack size 40 bytes, socket.o(.text.send))
 <BR><BR>[Stack]<UL><LI>Max Depth = 96<LI>Call Chain = send &rArr; getSn_TX_FSR
 </UL>
 <BR>[Calls]<UL><LI><a href="#[131]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wiz_send_data
@@ -2042,7 +2042,7 @@ Global Symbols
 <LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WIZCHIP_WRITE
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;close
 </UL>
-<BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_sendrecieve
+<BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_com
 </UL>
 
 <P><STRONG><a name="[8e]"></a>socket</STRONG> (Thumb, 306 bytes, Stack size 32 bytes, socket.o(.text.socket))
@@ -2059,13 +2059,13 @@ Global Symbols
 <P><STRONG><a name="[130]"></a>wiz_recv_data</STRONG> (Thumb, 482 bytes, Stack size 48 bytes, w5500.o(.text.wiz_recv_data))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = wiz_recv_data
 </UL>
-<BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
+<BR>[Called By]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
 </UL>
 
 <P><STRONG><a name="[131]"></a>wiz_send_data</STRONG> (Thumb, 482 bytes, Stack size 48 bytes, w5500.o(.text.wiz_send_data))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = wiz_send_data
 </UL>
-<BR>[Called By]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send
+<BR>[Called By]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send
 </UL>
 
 <P><STRONG><a name="[80]"></a>wizchip_bus_readdata</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, wizchip_conf.o(.text.wizchip_bus_readdata))
@@ -2140,7 +2140,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = __2printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Application_Loop
-<LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_sendrecieve
+<LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_com
 </UL>
 
 <P><STRONG><a name="[148]"></a>__scatterload_copy</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_copy), UNUSED)
@@ -2160,15 +2160,15 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> app-server.o(.text.Application_Setup)
 </UL>
-<P><STRONG><a name="[5f]"></a>app_sendrecieve</STRONG> (Thumb, 184 bytes, Stack size 8 bytes, app-server.o(.text.app_sendrecieve))
-<BR><BR>[Stack]<UL><LI>Max Depth = 112<LI>Call Chain = app_sendrecieve &rArr; recv &rArr; getSn_RX_RSR
+<P><STRONG><a name="[5f]"></a>app_com</STRONG> (Thumb, 172 bytes, Stack size 0 bytes, app-server.o(.text.app_com))
+<BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = app_com &rArr; recv &rArr; getSn_RX_RSR
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send
-<LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
+<BR>[Calls]<UL><LI><a href="#[fd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;recv
 <LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadFlagsWait
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osThreadFlagsSet
 <LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Controller_Reset
-<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Controller_PIController
+<LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Controller_PIController
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2printf
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> app-server.o(.text.Application_Setup)
@@ -2176,8 +2176,8 @@ Local Symbols
 <P><STRONG><a name="[60]"></a>app_main</STRONG> (Thumb, 42 bytes, Stack size 0 bytes, app-server.o(.text.app_main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = app_main &rArr; Application_Loop &rArr; osThreadFlagsWait &rArr; EvrRtxThreadFlagsWait &rArr; EventRecord4
 </UL>
-<BR>[Calls]<UL><LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osTimerStart
-<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osTimerNew
+<BR>[Calls]<UL><LI><a href="#[ff]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osTimerStart
+<LI><a href="#[fe]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osTimerNew
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Application_Loop
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> app-server.o(.text.Application_Setup)

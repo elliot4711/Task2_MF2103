@@ -25,9 +25,6 @@
 ".\objects\rtx_config.o"
 ".\objects\eventrecorder.o"
 ".\objects\retarget_io.o"
-".\objects\stm32l4xx_hal_msp.o"
-".\objects\startup_stm32l476xx.o"
-".\objects\system_stm32l4xx.o"
 ".\objects\stm32l4xx_hal_1.o"
 ".\objects\stm32l4xx_hal_cortex_1.o"
 ".\objects\stm32l4xx_hal_dma_1.o"
@@ -41,6 +38,9 @@
 ".\objects\stm32l4xx_hal_spi_ex_1.o"
 ".\objects\stm32l4xx_hal_tim_1.o"
 ".\objects\stm32l4xx_hal_tim_ex_1.o"
+".\objects\stm32l4xx_hal_msp.o"
+".\objects\startup_stm32l476xx.o"
+".\objects\system_stm32l4xx.o"
 --library_type=microlib --ro-base 0x08000000 --entry 0x08000000 --rw-base 0x20000000 --entry Reset_Handler --first __Vectors --strict --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list ".\Listings\Server.map" -o .\Objects\Server.axf

@@ -56,12 +56,11 @@ osTimerId_t timer_ctrl, timer_ref;
 void static app_main();
 void static app_com();
 void static app_ctrl();
-void callback_signal_flags(void *argument);
+void callback_signal_flags();
 
 void Application_Setup()
 {
 	// Reset global variables
-	reference = 2000;
 	data.vel = 0;
 	control = 0;
 	data.time = 0;
