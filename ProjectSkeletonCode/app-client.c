@@ -180,7 +180,9 @@ void Application_Loop()
 		if((socket_return = connect(SOCKET_NUMBER, server_addr, SERVER_PORT)) == SOCK_OK) // connect returns SOCK_OK if successful
 		{
 			printf("Socket has been connected\n");
+			
 			socket_return = getsockopt(SOCKET_NUMBER, SO_STATUS, &socket_status); // Get socket status using keyword SO_STATUS and store it in socket_status
+			
 			while(socket_status == SOCK_ESTABLISHED) // Check if socket_status indicates socket is established
 			{
 					osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until thread flag is 0x01 which will only be set if there is an error and com_success == 0, then we check socket status again
