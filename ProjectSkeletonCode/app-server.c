@@ -90,14 +90,16 @@ void app_com() {
 	for(;;) {
 			
 		osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until all flags (01) are set
-			
-		if ((socket_return = recv(SOCKET_NUMBER, (uint8_t*)&data, sizeof(data))) == sizeof(data)) // recv command returns the data size it recieved if successful so we can check that against the expected size
+		
+		socket_return = recv(SOCKET_NUMBER, (uint8_t*)&data, sizeof(data))
+		if ((socket_return) == sizeof(data)) // recv command returns the data size it recieved if successful so we can check that against the expected size
 		{
 			printf("Received data successfully: time=%u, vel=%d\n", data.time, data.vel);
 			
 			control = Controller_PIController(&reference, &data.vel, &data.time);
 			
-			if((socket_return = send(SOCKET_NUMBER, (uint8_t*)&control, sizeof(control))) == sizeof(control)) // send command returns the data size it sent if successful, so we check for that
+			socket_return = send(SOCKET_NUMBER, (uint8_t*)&control, sizeof(control))
+			if((socket_return) == sizeof(control)) // send command returns the data size it sent if successful, so we check for that
 			{
 				printf("Sent control signal: %d\n", control);
 			}
@@ -170,7 +172,7 @@ void Application_Loop()
 				else
 				{
 					printf("Something went wrong, socket not established \n");
-					osDelay(10);
+					HAL_Delay(5);
 				}
 				socket_return = getsockopt(SOCKET_NUMBER, SO_STATUS, &socket_status); // Get socket status using keyword SO_STATUS and store it in socket_status
 			}
@@ -186,5 +188,5 @@ void Application_Loop()
 		printf("Socket failed to opem \n");
 		
 	}
-	osDelay(500);
+	HAL_Delay(500);
 }

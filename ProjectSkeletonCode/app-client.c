@@ -126,14 +126,15 @@ void app_com(){
 		
 		osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until velocity has been read and ctrl thread gives go-ahead
 		com_success= 0; // Reset flag
-		
-		if((socket_return = send(SOCKET_NUMBER, (uint8_t*)&data, sizeof(data))) == sizeof(data)) // send command returns the data size it sent if successful, so we check for that
+		socket_return = send(SOCKET_NUMBER, (uint8_t*)&data, sizeof(data))
+		if((socket_return) == sizeof(data)) // send command returns the data size it sent if successful, so we check for that
 		{
 			
 			printf("Sending vel: %d \n", data.vel); // %d is for int, \n is newline
 			printf("Sending time: %d \n", data.time);
 			
-			if((socket_return = recv(SOCKET_NUMBER, (uint8_t*)&control, sizeof(control))) == sizeof(control)) // recv command returns the data size it recieved if successful so we can check that against the expected size
+			socket_return = recv(SOCKET_NUMBER, (uint8_t*)&control, sizeof(control))
+			if((socket_return) == sizeof(control)) // recv command returns the data size it recieved if successful so we can check that against the expected size
 			{
 				printf("Control signal recieve success: %d\n", control);
 				com_success= 1; // Change flag
@@ -192,7 +193,7 @@ void Application_Loop()
 		{
 			printf("Failure opening socket \n");
 		}
-		osDelay(100);
+		HAL_Delay(100);
 		
 	}
 }
