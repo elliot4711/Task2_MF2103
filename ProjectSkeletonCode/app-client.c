@@ -12,7 +12,7 @@
 #define SERVER_PORT 2103
 #define SAMPLE_TIME 10
 
-// Global variables ----------------------------------------------------------*/
+// Global variables
 int32_t control;
 int8_t socket_return;
 uint8_t socket_status;
@@ -90,32 +90,32 @@ void callback_signal_flags(){
 
 
 void app_ctrl () {
-		for(;;) {
+	for(;;) {
 		
-			osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until all flags (01) are set
-			
-			// Get time
-			data.time = Main_GetTickMillisec();
+		osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until all flags (01) are set
+		
+		// Get time
+		data.time = Main_GetTickMillisec();
 
-			// Calculate motor velocity
-			data.vel = Peripheral_Encoder_CalculateVelocity(data.time);
-			
-			osThreadFlagsSet(T_ID1, 0x01); // Give go-ahead to com thread to start communicating
-			osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait to recieve control signal
+		// Calculate motor velocity
+		data.vel = Peripheral_Encoder_CalculateVelocity(data.time);
+		
+		osThreadFlagsSet(T_ID1, 0x01); // Give go-ahead to com thread to start communicating
+		osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait to recieve control signal
 
-			if (com_success == 0)
-			{
-				// If there is an error in recieving control signal, stop motor
-				TIM3->CCR1 = 0;
-				TIM3->CCR2 = 0;
-				control = 0;
-				osThreadFlagsSet(T_ID3, 0x01);
-			}
-			
-			else if (com_success == 1){
-				// If flag indicates success in recieving control signal, then we actuate motor
-				Peripheral_PWM_ActuateMotor(control);
-			}
+		if (com_success == 0)
+		{
+			// If there is an error in recieving control signal, stop motor
+			TIM3->CCR1 = 0;
+			TIM3->CCR2 = 0;
+			control = 0;
+			osThreadFlagsSet(T_ID3, 0x01);
+		}
+		
+		else if (com_success == 1){
+			// If flag indicates success in recieving control signal, then we actuate motor
+			Peripheral_PWM_ActuateMotor(control);
+		}
 		
 	}
 
@@ -133,7 +133,7 @@ void app_com(){
 			printf("Sending vel: %d \n", data.vel); // %d is for int, \n is newline
 			printf("Sending time: %d \n", data.time);
 			
-			if((socket_return = recv(SOCKET_NUMBER, (uint8_t*)&control, sizeof(control))) == sizeof(control)) // recv command returns the data size it recieved if successful so we can check that against the expected
+			if((socket_return = recv(SOCKET_NUMBER, (uint8_t*)&control, sizeof(control))) == sizeof(control)) // recv command returns the data size it recieved if successful so we can check that against the expected size
 			{
 				printf("Control signal recieve success: %d\n", control);
 				com_success= 1; // Change flag
@@ -147,7 +147,7 @@ void app_com(){
 		{
 			printf("Velocity send failure \n");
 		}
-	osThreadFlagsSet(T_ID2, 0x01); // Give go-ahead to ctrl thread to continue after recieving control signal
+		osThreadFlagsSet(T_ID2, 0x01); // Give go-ahead to ctrl thread to continue after recieving control signal
 	}
 }
 
@@ -155,14 +155,13 @@ void static app_main() {
 	// Define timer with callback function, set to periodic, define argument to callback, in this case null
 	timer_ctrl = osTimerNew(callback_signal_flags, osTimerPeriodic, NULL, NULL);
 
-	
 	// Start timers with set period time
 	osTimerStart(timer_ctrl, SAMPLE_TIME);
 	
-  for (;;)
-  {
+	for (;;)
+	{
 		Application_Loop();
-  }
+	}
 
 }
 

@@ -13,7 +13,7 @@
 #define REF_FLIP_TIME 4000
 
 
-// Global variables ----------------------------------------------------------*/
+// Global variables
 int32_t reference, control;
 uint8_t socket_return;
 uint8_t socket_status;
@@ -87,13 +87,13 @@ void callback_signal_flags(){
 
 
 void app_com() {
-		for(;;) {
+	for(;;) {
 			
-			osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until all flags (01) are set
+		osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until all flags (01) are set
 			
-			if ((socket_return = recv(SOCKET_NUMBER, (uint8_t*)&data, sizeof(data))) == sizeof(data)) // recv command returns the data size it recieved if successful so we can check that against the expected size
-			{
-				printf("Received data successfully: time=%u, vel=%d\n", data.time, data.vel);
+		if ((socket_return = recv(SOCKET_NUMBER, (uint8_t*)&data, sizeof(data))) == sizeof(data)) // recv command returns the data size it recieved if successful so we can check that against the expected size
+		{
+			printf("Received data successfully: time=%u, vel=%d\n", data.time, data.vel);
 			
 			control = Controller_PIController(&reference, &data.vel, &data.time);
 			
@@ -126,7 +126,7 @@ void app_ref(){
 		
 		osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until all flags (01) are set, this flag is set by the timer
 		reference = -reference;
-		// Controller_Reset(); // unsure if this needs to be here
+		// Controller_Reset(); // unsure if this needs to be here or not
 	
 	}
 }
@@ -138,53 +138,53 @@ void static app_main() {
 	// Start timers with set period time
 	osTimerStart(timer_ref, REF_FLIP_TIME);
 	
-  for (;;)
-  {
+	for (;;)
+	{
 		Application_Loop();
-  }
+	}
 
 }
 
 void Application_Loop()
 {
-		printf("Opening socket");
-		if((socket_return = socket(SOCKET_NUMBER, SOCK_STREAM, SERVER_PORT, SF_TCP_NODELAY)) == SOCKET_NUMBER) // socket returns socket number if successfully connected. 
-		// SF_TCP_NODELAY forces reciever to acknowledge every packet instead of batching acks or packets together to save time, in our case this this helps reduce latency
-		// SOCK_STREAM defines that we want a TCP socket
+	printf("Opening socket");
+	if((socket_return = socket(SOCKET_NUMBER, SOCK_STREAM, SERVER_PORT, SF_TCP_NODELAY)) == SOCKET_NUMBER) // socket returns socket number if successfully connected. 
+	// SF_TCP_NODELAY forces reciever to acknowledge every packet instead of batching acks or packets together to save time, in our case this this helps reduce latency
+	// SOCK_STREAM defines that we want a TCP socket
+	{
+		printf("Socket successfully opened \n");
+		printf("Checking if connection is ok");
+		
+		if ((socket_return = listen(SOCKET_NUMBER)) == SOCK_OK) // Listen checks for connection request, returns SOCK_OK if succesfully connected
 		{
-			printf("Socket successfully opened \n");
-			printf("Checking if connection is ok");
-			
-			if ((socket_return = listen(SOCKET_NUMBER)) == SOCK_OK) // Listen checks for connection request, returns SOCK_OK if succesfully connected
+			printf("Successfully checked connection \n");
+			socket_return = getsockopt(SOCKET_NUMBER, SO_STATUS, &socket_status); // Get socket status using keyword SO_STATUS and store it in socket_status
+			while (socket_status == SOCK_LISTEN || socket_status == SOCK_ESTABLISHED) // Checks if socket is listening or established
 			{
-				printf("Successfully checked connection \n");
-				socket_return = getsockopt(SOCKET_NUMBER, SO_STATUS, &socket_status); // Get socket status using keyword SO_STATUS and store it in socket_status
-				while (socket_status == SOCK_LISTEN || socket_status == SOCK_ESTABLISHED) // Checks if socket is listening or established
+				if (socket_status == SOCK_ESTABLISHED) 
+				// If established, give go ahead to com thread and wait
 				{
-					if (socket_status == SOCK_ESTABLISHED) 
-					// If established, give go ahead to com thread and wait
-					{
-						osThreadFlagsSet(T_ID2, 0x01); // Gives go-ahead to com thread to begin sending
-						osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Waits until com thread gives go-ahead, essentially this checks if socket is still connected for every loop of the com thread
-					}
-					else
-					{
-						printf("Something went wrong, socket not established \n");
-						osDelay(10);
-					}
-					socket_return = getsockopt(SOCKET_NUMBER, SO_STATUS, &socket_status); // Get socket status using keyword SO_STATUS and store it in socket_status
+					osThreadFlagsSet(T_ID2, 0x01); // Gives go-ahead to com thread to begin sending
+					osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Waits until com thread gives go-ahead, essentially this checks if socket is still connected for every loop of the com thread
 				}
-				// If the socket is not listening or established we reset controller, close socket and try again
-				printf("Socket has been disconnected\n");
-				Controller_Reset();
-				close(SOCKET_NUMBER);
-				printf("Socket has been closed \n");
+				else
+				{
+					printf("Something went wrong, socket not established \n");
+					osDelay(10);
+				}
+				socket_return = getsockopt(SOCKET_NUMBER, SO_STATUS, &socket_status); // Get socket status using keyword SO_STATUS and store it in socket_status
 			}
+			// If the socket is not listening or established we reset controller, close socket and try again
+			printf("Socket has been disconnected\n");
+			Controller_Reset();
+			close(SOCKET_NUMBER);
+			printf("Socket has been closed \n");
 		}
-		else // Socket cant open
-		{
-			printf("Socket failed to opem \n");
-			
-		}
-		osDelay(500);
+	}
+	else // Socket cant open
+	{
+		printf("Socket failed to opem \n");
+		
+	}
+	osDelay(500);
 }
