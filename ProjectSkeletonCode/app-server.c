@@ -137,9 +137,6 @@ void static app_main() {
 	// Define timer with callback function, set to periodic, define argument to callback
 	timer_ref = osTimerNew(callback_signal_flags, osTimerPeriodic, NULL, NULL);
 	
-	// Start timers with set period time
-	osTimerStart(timer_ref, REF_FLIP_TIME);
-	
 	for (;;)
 	{
 		Application_Loop();
@@ -165,13 +162,16 @@ void Application_Loop()
 			{
 				if (socket_status == SOCK_ESTABLISHED) 
 				// If established, give go ahead to com thread and wait
-				{
+				{	
+					// Start timers with set period time
+					osTimerStart(timer_ref, REF_FLIP_TIME);
 					osThreadFlagsSet(T_ID2, 0x01); // Gives go-ahead to com thread to begin sending
 					osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Waits until com thread gives go-ahead, essentially this checks if socket is still connected for every loop of the com thread
 				}
 				else
 				{
 					printf("Something went wrong, socket not established, trying again in 5ms \n");
+					osTimerStop(timer_ref, REF_FLIP_TIME);
 					HAL_Delay(5);
 				}
 				socket_return = getsockopt(SOCKET_NUMBER, SO_STATUS, &socket_status); // Get socket status using keyword SO_STATUS and store it in socket_status

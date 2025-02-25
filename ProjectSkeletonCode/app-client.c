@@ -155,9 +155,6 @@ void app_com(){
 void static app_main() {
 	// Define timer with callback function, set to periodic, define argument to callback, in this case null
 	timer_ctrl = osTimerNew(callback_signal_flags, osTimerPeriodic, NULL, NULL);
-
-	// Start timers with set period time
-	osTimerStart(timer_ctrl, SAMPLE_TIME);
 	
 	for (;;)
 	{
@@ -185,11 +182,14 @@ void Application_Loop()
 			
 			while(socket_status == SOCK_ESTABLISHED) // Check if socket_status indicates socket is established
 			{
+					// Start timers with set period time
+					osTimerStart(timer_ctrl, SAMPLE_TIME);
 					osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until thread flag is 0x01 which will only be set if there is an error and com_success == 0, then we check socket status again
 					// Essentially this part ensures that if there is an issue recieving the control signal, the client will try to reconnect
 					socket_return = getsockopt(SOCKET_NUMBER, SO_STATUS, &socket_status);
 			}
 			printf("Socket disconnected \n");
+			osTimerStop(timer_ctrl, SAMPLE_TIME);
 		}
 		else
 		{
