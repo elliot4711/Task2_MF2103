@@ -8,7 +8,7 @@
 #include "wizchip_conf.h"
 #include <stdio.h>
 
-#define APP_SOCK 0
+#define SOCKET_NUMBER 0
 #define SERVER_PORT 2103
 #define SAMPLE_TIME 10
 
@@ -103,18 +103,18 @@ void app_ctrl () {
 			osThreadFlagsSet(T_ID1, 0x01); // Give go-ahead to com thread to start communicating
 			osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait to recieve control signal
 
-			
-			if (com_success == 1){
-				// If flag indicates success in recieving control signal, then we actuate motor
-				Peripheral_PWM_ActuateMotor(control);
-			}
-			else if (com_success == 0)
+			if (com_success == 0)
 			{
 				// If there is an error in recieving control signal, stop motor
 				TIM3->CCR1 = 0;
 				TIM3->CCR2 = 0;
 				control = 0;
 				osThreadFlagsSet(T_ID3, 0x01);
+			}
+			
+			else if (com_success == 1){
+				// If flag indicates success in recieving control signal, then we actuate motor
+				Peripheral_PWM_ActuateMotor(control);
 			}
 		
 	}
@@ -127,32 +127,32 @@ void app_com(){
 		osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until velocity has been read and ctrl thread gives go-ahead
 		com_success= 0; // Reset flag
 		
-		if((socket_return = send(APP_SOCK, (uint8_t*)&data, sizeof(data))) == sizeof(data)) //
+		if((socket_return = send(SOCKET_NUMBER, (uint8_t*)&data, sizeof(data))) == sizeof(data)) // send command returns the data size it sent if successful, so we check for that
 		{
 			
-			printf("Sending vel: %d \n\r", data.vel); // %d is for int, \n\r is newline and carriage return
-			printf("Sending time: %d \n\r", data.time);
+			printf("Sending vel: %d \n", data.vel); // %d is for int, \n is newline
+			printf("Sending time: %d \n", data.time);
 			
-			if((socket_return = recv(APP_SOCK, (uint8_t*)&control, sizeof(control))) == sizeof(control))
+			if((socket_return = recv(SOCKET_NUMBER, (uint8_t*)&control, sizeof(control))) == sizeof(control)) // recv command returns the data size it recieved if successful so we can check that against the expected
 			{
-				printf("Control signal recieve success: %d\n\r", control);
-				com_success= 1;
+				printf("Control signal recieve success: %d\n", control);
+				com_success= 1; // Change flag
 			}
 			else
 			{
-				printf("Control signal recieve failure \n\r");
+				printf("Control signal recieve failure \n");
 			}
 		}
 		else
 		{
-			printf("Velocity send failure \n\r");
+			printf("Velocity send failure \n");
 		}
-	osThreadFlagsSet(T_ID2, 0x01);
+	osThreadFlagsSet(T_ID2, 0x01); // Give go-ahead to ctrl thread to continue after recieving control signal
 	}
 }
 
 void static app_main() {
-	// Define timer with callback function, set to periodic, define argument to callback
+	// Define timer with callback function, set to periodic, define argument to callback, in this case null
 	timer_ctrl = osTimerNew(callback_signal_flags, osTimerPeriodic, NULL, NULL);
 
 	
@@ -169,26 +169,29 @@ void static app_main() {
 void Application_Loop()
 {
 	printf("Opening socket");
-	if((socket_return = socket(APP_SOCK, SOCK_STREAM, SERVER_PORT, SF_TCP_NODELAY)) == APP_SOCK)
+	if((socket_return = socket(SOCKET_NUMBER, SOCK_STREAM, SERVER_PORT, SF_TCP_NODELAY)) == SOCKET_NUMBER) // socket returns socket number if successfully connected. 
+	// SF_TCP_NODELAY forces reciever to acknowledge every packet instead of batching acks or packets together to save time, in our case this this helps reduce latency
+	// SOCK_STREAM defines that we want a TCP socket
 	{
-		printf("Successfully opened socket \n\r");
+		printf("Successfully opened socket \n");
 		
 		// Try to connect to server
 		printf("Connecting");
-		if((socket_return = connect(APP_SOCK, server_addr, SERVER_PORT)) == SOCK_OK)
+		if((socket_return = connect(SOCKET_NUMBER, server_addr, SERVER_PORT)) == SOCK_OK) // connect returns SOCK_OK if successful
 		{
-			printf("Socket has been connected\n\r");
-			socket_return = getsockopt(APP_SOCK, SO_STATUS, &socket_status);
-			while(socket_status == SOCK_ESTABLISHED)
+			printf("Socket has been connected\n");
+			socket_return = getsockopt(SOCKET_NUMBER, SO_STATUS, &socket_status); // Get socket status using keyword SO_STATUS and store it in socket_status
+			while(socket_status == SOCK_ESTABLISHED) // Check if socket_status indicates socket is established
 			{
-					osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever);
-					socket_return = getsockopt(APP_SOCK, SO_STATUS, &socket_status);
+					osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until thread flag is 0x01 which will only be set if there is an error and com_success == 0, then we check socket status again
+					// Essentially this part ensures that if there is an issue recieving the control signal, the client will try to reconnect
+					socket_return = getsockopt(SOCKET_NUMBER, SO_STATUS, &socket_status);
 			}
-			printf("Socket disconnected \n\r");
+			printf("Socket disconnected \n");
 		}
 		else
 		{
-			printf("Failure opening socket \n\r");
+			printf("Failure opening socket \n");
 		}
 		osDelay(100);
 		
