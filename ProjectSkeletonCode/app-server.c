@@ -101,12 +101,12 @@ void app_com() {
 			socket_return = send(SOCKET_NUMBER, (uint8_t*)&control, sizeof(control))
 			if((socket_return) == sizeof(control)) // send command returns the data size it sent if successful, so we check for that
 			{
-				printf("Sent control signal: %d\n", control);
+				printf("Control signal has been sent with value: %d\n", control);
 			}
 			else
 			{
 				// We reset the controller at any hint of failure
-				printf("Failure when sending control signal \n");
+				printf("Failure when sending control signal, resetting controller \n");
 				Controller_Reset();
 				data.vel = 0;
 			}
@@ -114,7 +114,7 @@ void app_com() {
 		else
 		{
 			// We reset the controller at any hint of failure
-			printf("Failure in recieving velocity \n");
+			printf("Failure in recieving velocity, resetting controller \n");
 			Controller_Reset();
 			data.vel = 0;
 		}
@@ -127,8 +127,8 @@ void app_ref(){
 	for(;;) {
 		
 		osThreadFlagsWait(0x01, osFlagsWaitAll, osWaitForever); // Wait until all flags (01) are set, this flag is set by the timer
+		
 		reference = -reference;
-		// Controller_Reset(); // unsure if this needs to be here or not
 	
 	}
 }
@@ -171,13 +171,12 @@ void Application_Loop()
 				}
 				else
 				{
-					printf("Something went wrong, socket not established \n");
+					printf("Something went wrong, socket not established, trying again in 5ms \n");
 					HAL_Delay(5);
 				}
 				socket_return = getsockopt(SOCKET_NUMBER, SO_STATUS, &socket_status); // Get socket status using keyword SO_STATUS and store it in socket_status
 			}
 			// If the socket is not listening or established we reset controller, close socket and try again
-			printf("Socket has been disconnected\n");
 			Controller_Reset();
 			close(SOCKET_NUMBER);
 			printf("Socket has been closed \n");
