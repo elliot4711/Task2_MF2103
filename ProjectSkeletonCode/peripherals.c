@@ -37,14 +37,14 @@ void Peripheral_PWM_ActuateMotor(int32_t vel)
 	
 	scaled_vel = vel >> 19;
 
-	vel_debug = scaled_vel;
+	// vel_debug = scaled_vel;
 	if (vel > 0) {
-		TIM3->CCR1 = scaled_vel;
+		TIM3->CCR1 = (uint16_t)scaled_vel;
 		TIM3->CCR2 = 0;
 	}
 	else {
 		TIM3->CCR1 = 0;
-		TIM3->CCR2 = -scaled_vel;
+		TIM3->CCR2 = (uint16_t)-scaled_vel;
 	}
 	
 	return;
@@ -60,19 +60,20 @@ int32_t Peripheral_Encoder_CalculateVelocity(uint32_t ms)
 	// Address offset: 0x24 (we want bits 0-15)
 	
 	// Read encoder
-	encoder = TIM1->CNT;
+	encoder = (int16_t)TIM1->CNT;
 	
 	int16_t encoder_difference = encoder - lastcycle_encoder;
 	difference_debug = encoder_difference;
-	int32_t ms_difference = ms - lastcycle_ms;
+	int32_t ms_difference = (int32_t)ms - lastcycle_ms;
 	
 	// Calculate RPM, 60000 because time is in ms, 2048 steps is one revolution
-	int16_t rpm = ((encoder_difference) * 60000) / (2048 * (ms_difference));
+	int32_t rpm = ((encoder_difference) * 60000) / (2048 * (10));
 	
 	// Save states
 	lastcycle_encoder = encoder;
-	lastcycle_ms = ms;
+	lastcycle_ms = (int32_t)ms;
 	
 	// Flip value to get correct positive direction
+	vel_debug = -rpm;
 	return (-rpm);
 }

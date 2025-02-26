@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\RTOS.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\RTOS.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6220000: Last Updated: Wed Feb 19 13:33:36 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6220000: Last Updated: Wed Feb 26 11:38:18 2025
 <BR><P>
 <H3>Maximum Stack Usage =        200 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1189,8 +1189,8 @@ Global Symbols
 <P><STRONG><a name="[cb]"></a>HAL_InitTick</STRONG> (Thumb, 90 bytes, Stack size 8 bytes, stm32l4xx_hal_1.o(.text.HAL_InitTick))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = HAL_InitTick &rArr; HAL_NVIC_SetPriority
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SYSTICK_Config
-<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_SetPriority
+<BR>[Calls]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_NVIC_SetPriority
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SYSTICK_Config
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_ClockConfig
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_OscConfig
@@ -1372,17 +1372,15 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcRtxKernelStart
 </UL>
 
-<P><STRONG><a name="[e0]"></a>Peripheral_Encoder_CalculateVelocity</STRONG> (Thumb, 90 bytes, Stack size 16 bytes, peripherals.o(.text.Peripheral_Encoder_CalculateVelocity))
-<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = Peripheral_Encoder_CalculateVelocity
-</UL>
-<BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_ctrl
+<P><STRONG><a name="[e0]"></a>Peripheral_Encoder_CalculateVelocity</STRONG> (Thumb, 78 bytes, Stack size 0 bytes, peripherals.o(.text.Peripheral_Encoder_CalculateVelocity))
+<BR><BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_ctrl
 </UL>
 
 <P><STRONG><a name="[82]"></a>Peripheral_GPIO_EnableMotor</STRONG> (Thumb, 16 bytes, Stack size 0 bytes, peripherals.o(.text.Peripheral_GPIO_EnableMotor))
 <BR><BR>[Called By]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Application_Setup
 </UL>
 
-<P><STRONG><a name="[e2]"></a>Peripheral_PWM_ActuateMotor</STRONG> (Thumb, 62 bytes, Stack size 0 bytes, peripherals.o(.text.Peripheral_PWM_ActuateMotor))
+<P><STRONG><a name="[e2]"></a>Peripheral_PWM_ActuateMotor</STRONG> (Thumb, 46 bytes, Stack size 0 bytes, peripherals.o(.text.Peripheral_PWM_ActuateMotor))
 <BR><BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;app_ctrl
 </UL>
 

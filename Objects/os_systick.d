@@ -1,8 +1,8 @@
 ./objects/os_systick.o: \
   C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.1.0\CMSIS\RTOS2\Source\os_systick.c \
-  RTE\_Server\Pre_Include_Global.h \
+  RTE\_Client\Pre_Include_Global.h \
   C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.1.0\CMSIS\RTOS2\Include\os_tick.h \
-  RTE\_Server\RTE_Components.h \
+  RTE\_Client\RTE_Components.h \
   C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l4xx.h \
   C:\Users\Administrator\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.6.2\Drivers\CMSIS\Device\ST\STM32L4xx\Include\stm32l476xx.h \
   C:\Users\Administrator\AppData\Local\Arm\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include\core_cm4.h \
